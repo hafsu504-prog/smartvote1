@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SmartVote1 - Change starts with 1 Taka</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      background: #f4f7f9;
+      color: #333;
+    }
+    header {
+      background: #007bff;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    header h1 {
+      margin: 0;
+      font-weight: 700;
+    }
+    main {
+      max-width: 700px;
+      margin: 1.5rem auto;
+      padding: 0 1rem;
+    }
+    .topic-list {
+      list-style: none;
+      padding: 0;
+    }
+    .topic-list li {
+      background: white;
+      margin-bottom: 1rem;
+      padding: 1rem;
+      border-radius: 6px;
+      box-shadow: 0 0 6px rgba(0,0,0,0.1);
+    }
+    .topic-list h2 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1.3rem;
+      color: #007bff;
+    }
+    .topic-list p {
+      margin: 0 0 1rem 0;
+    }
+    button.vote-btn {
+      background: #007bff;
+      border: none;
+      padding: 0.5rem 1rem;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    button.vote-btn:hover {
+      background: #0056b3;
+    }
+    #vote-section {
+      margin-top: 2rem;
+      background: white;
+      padding: 1rem;
+      border-radius: 6px;
+      box-shadow: 0 0 6px rgba(0,0,0,0.1);
+      display: none;
+    }
+    #vote-section h3 {
+      margin-top: 0;
+      color: #007bff;
+    }
+    #result-section {
+      margin-top: 2rem;
+      background: white;
+      padding: 1rem;
+      border-radius: 6px;
+      box-shadow: 0 0 6px rgba(0,0,0,0.1);
+      display: none;
+    }
+    footer {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #666;
+      margin: 3rem 0 1rem 0;
+    }
+    .payment-method {
+      margin: 1rem 0;
+    }
+    label {
+      display: inline-block;
+      margin-right: 1rem;
+      cursor: pointer;
+    }
+    .loading {
+      margin-top: 1rem;
+      color: #007bff;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>SmartVote1</h1>
+  <p>Change starts with 1 Taka</p>
+</header>
+
+<main>
+  <section id="topics">
+    <ul class="topic-list">
+      <li>
+        <h2>গরিব ছাত্রদের বই</h2>
+        <p>১ টাকা দিয়ে বই পড়ার সুযোগ দিন</p>
+        <button class="vote-btn" data-id="1" data-title="গরিব ছাত্রদের বই">ভোট দিন</button>
+      </li>
+      <li>
+        <h2>গ্রামে গাছ লাগানো</h2>
+        <p>পরিবেশ বাঁচাতে গাছ লাগান</p>
+        <button class="vote-btn" data-id="2" data-title="গ্রামে গাছ লাগানো">ভোট দিন</button>
+      </li>
+      <li>
+        <h2>শিক্ষার উন্নয়ন</h2>
+        <p>শিক্ষার্থীদের জন্য সহায়তা</p>
+        <button class="vote-btn" data-id="3" data-title="শিক্ষার উন্নয়ন">ভোট দিন</button>
+      </li>
+    </ul>
+  </section>
+
+  <section id="vote-section">
+    <h3>আপনি নির্বাচন করেছেন: <span id="selected-topic"></span></h3>
+    <p>১ টাকা কেটে আপনার ভোট গ্রহণ করা হবে।</p>
+
+    <div class="payment-method">
+      <label><input type="radio" name="payment" value="bkash" checked /> bKash</label>
+      <label><input type="radio" name="payment" value="nagad" /> Nagad</label>
+    </div>
+
+    <button id="confirm-vote-btn" class="vote-btn">ভোট নিশ্চিত করুন এবং পেমেন্ট করুন</button>
+    <button id="cancel-vote-btn" style="margin-left:1rem; background:#dc3545;">বাতিল করুন</button>
+
+    <p class="loading" id="loading-text" style="display:none;">পেমেন্ট প্রসেস করা হচ্ছে...</p>
+  </section>
+
+  <section id="result-section">
+    <h3>ধন্যবাদ!</h3>
+    <p>আপনার ভোট এবং অবদানের জন্য SmartVote1 পরিবারের পক্ষ থেকে কৃতজ্ঞতা।</p>
+    <p>আপনার ১ টাকায় গাছ লাগানো হবে বা অন্য কাজ হবে।</p>
+  </section>
+</main>
+
+<footer>
+  © 2025 SmartVote1. All rights reserved.
+</footer>
+
+<script>
+  const voteButtons = document.querySelectorAll('.vote-btn[data-id]');
+  const voteSection = document.getElementById('vote-section');
+  const selectedTopicSpan = document.getElementById('selected-topic');
+  const confirmVoteBtn = document.getElementById('confirm-vote-btn');
+  const cancelVoteBtn = document.getElementById('cancel-vote-btn');
+  const loadingText = document.getElementById('loading-text');
+  const resultSection = document.getElementById('result-section');
+  const topicsSection = document.getElementById('topics');
+
+  let selectedTopic = null;
+
+  voteButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      selectedTopic = {
+        id: button.getAttribute('data-id'),
+        title: button.getAttribute('data-title')
+      };
+      selectedTopicSpan.textContent = selectedTopic.title;
+      voteSection.style.display = 'block';
+      topicsSection.style.display = 'none';
+      resultSection.style.display = 'none';
+    });
+  });
+
+  cancelVoteBtn.addEventListener('click', () => {
+    selectedTopic = null;
+    voteSection.style.display = 'none';
+    topicsSection.style.display = 'block';
+    resultSection.style.display = 'none';
+  });
+
+  confirmVoteBtn.addEventListener('click', () => {
+    const paymentMethod = document.querySelector('input[name="payment"]:checked').value;
+
+    loadingText.style.display = 'block';
+    confirmVoteBtn.disabled = true;
+    cancelVoteBtn.disabled = true;
+
+    // এখানে পেমেন্ট ইন্টিগ্রেশন API কল হবে। এখন সিমুলেট করা হচ্ছে:
+    setTimeout(() => {
+      loadingText.style.display = 'none';
+      voteSection.style.display = 'none';
+      resultSection.style.display = 'block';
+      confirmVoteBtn.disabled = false;
+      cancelVoteBtn.disabled = false;
+
+      // TODO: পেমেন্ট API কল ও রেসপন্স হ্যান্ডেল করো
+      // এখানে পেমেন্ট সফল হলে ডাটাবেজে সংরক্ষণ করতে হবে
+
+    }, 3000);
+  });
+</script>
+
+</body>
+</html>
